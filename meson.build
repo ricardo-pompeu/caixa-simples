@@ -1,0 +1,16 @@
+project('caixa-simples', version: '0.2.1', meson_version: '>= 0.61.0', license: 'GPL-3.0-or-later')
+python = import('python').find_installation('python3')
+# Aplicação Python: valida o runtime sem exigir cabeçalhos C.
+run_command(python, '-c', 'import gi, cairo; gi.require_version("Gtk", "4.0"); gi.require_version("Adw", "1"); from gi.repository import Gtk, Adw; assert Gtk.get_minor_version() >= 14; assert Adw.get_minor_version() >= 5', check: true)
+pkgdir = get_option('prefix') / get_option('datadir') / 'caixa-simples'
+install_subdir('caixa_simples', install_dir: pkgdir, exclude_directories: '__pycache__')
+conf = configuration_data()
+conf.set('PYTHON', python.full_path())
+conf.set('PKGDIR', pkgdir)
+configure_file(input: 'data/caixa-simples.in', output: 'caixa-simples', configuration: conf, install: true, install_dir: get_option('bindir'), install_mode: 'rwxr-xr-x')
+install_data('data/io.github.caixasimples.CaixaSimples.desktop', install_dir: get_option('datadir') / 'applications')
+install_data('data/io.github.caixasimples.CaixaSimples.metainfo.xml', install_dir: get_option('datadir') / 'metainfo')
+install_data('data/io.github.caixasimples.CaixaSimples.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
+install_data('data/io.github.caixasimples.CaixaSimples-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
+meson.add_install_script('scripts/post-install.py')
+test('logic-and-receipts', python, args: ['-m', 'unittest', 'discover', '-s', meson.project_source_root() / 'tests', '-v'], env: ['PYTHONPATH=' + meson.project_source_root()])

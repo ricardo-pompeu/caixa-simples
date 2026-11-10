@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+  <title>Caixa Simples</title>
+  <g fill="#2e3436">
+    <path fill-rule="evenodd" d="M4 1h8v7l-2-1-2 1-2-1-2 1zm2 2v2h4V3z"/>
+    <path fill-rule="evenodd" d="M3 8h1v2l2-1 2 1 2-1 2 1V8h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2zm3 4v2h4v-2z"/>
+  </g>
+</svg>

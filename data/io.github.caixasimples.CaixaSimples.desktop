@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Caixa Simples
+Comment=Cadastre produtos, venda e imprima comprovantes
+Exec=caixa-simples
+Icon=io.github.caixasimples.CaixaSimples
+Terminal=false
+Type=Application
+Categories=Office;Finance;
+Keywords=caixa;pdv;vendas;comércio;
+StartupNotify=true

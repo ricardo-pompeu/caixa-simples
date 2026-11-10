@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+  <title>Caixa Simples</title>
+  <desc>Comprovante de papel saindo de uma gaveta azul, com profundidade suave.</desc>
+  <defs>
+    <!-- Gradiente discreto somente na borda curva da gaveta. -->
+    <linearGradient id="edge" x1="12" y1="0" x2="116" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1a5fb4"/>
+      <stop offset=".18" stop-color="#1c71d8"/>
+      <stop offset=".82" stop-color="#1c71d8"/>
+      <stop offset="1" stop-color="#1a5fb4"/>
+    </linearGradient>
+    <linearGradient id="paper-shadow" x1="0" y1="44" x2="0" y2="68" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1a5fb4" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#1a5fb4" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Perfil inferior de 4 px, sem sombra fora da silhueta. -->
+  <rect x="12" y="48" width="104" height="64" rx="14" fill="url(#edge)"/>
+  <rect x="12" y="44" width="104" height="64" rx="14" fill="#3584e4"/>
+  <path d="M26 45h76a13 13 0 0 1 12 8" fill="none" stroke="#62a0ea" stroke-width="2" stroke-linecap="round"/>
+  <!-- Sombra de contato do papel sobre o corpo do caixa. -->
+  <path d="M32 44h64v20l-8-4-8 4-8-4-8 4-8-4-8 4-16-4z" fill="url(#paper-shadow)"/>
+  <!-- Borda do papel e face clara. -->
+  <path d="M34 14h60v48l-8-4-8 4-8-4-8 4-8-4-8 4-12-4z" fill="#c0bfbc"/>
+  <path d="M34 12h58v46l-6-4-8 4-8-4-8 4-8-4-8 4-12-4z" fill="#f6f5f4"/>
+  <path d="M36 14h54" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <path d="M46 26h34M46 36h22M46 46h34" fill="none" stroke="#9a9996" stroke-width="4" stroke-linecap="round"/>
+  <!-- Rebaixo da gaveta, mantendo o desenho original. -->
+  <rect x="26" y="76" width="76" height="22" rx="7" fill="#62a0ea"/>
+  <rect x="26" y="74" width="76" height="22" rx="7" fill="#1a5fb4"/>
+  <path d="M34 75h60" fill="none" stroke="#154c91" stroke-width="2" stroke-linecap="round"/>
+  <rect x="52" y="82" width="24" height="6" rx="3" fill="#154c91"/>
+  <rect x="52" y="80" width="24" height="6" rx="3" fill="#99c1f1"/>
+</svg>

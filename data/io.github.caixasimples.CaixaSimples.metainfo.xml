@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.caixasimples.CaixaSimples</id>
+  <name>Caixa Simples</name>
+  <summary>Um caixa simples para pequenos comércios</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer id="io.github.caixasimples"><name>Colaboradores do Caixa Simples</name></developer>
+  <description><p>Cadastre produtos com seu leitor USB, registre vendas e imprima comprovantes não fiscais. Todos os dados ficam neste computador, sem contas e sem internet.</p><p>Histórico com reimpressão, comprovantes em PDF e backups locais protegem a rotina da loja.</p></description>
+  <launchable type="desktop-id">io.github.caixasimples.CaixaSimples.desktop</launchable>
+  <provides><binary>caixa-simples</binary></provides>
+  <content_rating type="oars-1.1"/>
+  <releases><release version="0.2.1" date="2026-10-29"><description><p>Ícone simples de comprovante e gaveta, com profundidade discreta e versão simbólica no estilo GNOME.</p></description></release><release version="0.2.0" date="2026-10-20"><description><p>Nova aba Fechamento com quantidades de produtos vendidos por dia.</p></description></release><release version="0.1.0" date="2026-10-19"/></releases>
+</component>
