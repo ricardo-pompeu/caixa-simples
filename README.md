@@ -2,7 +2,7 @@
 
 ![Ícone do Bipe](data/bipe-icon-preview.png)
 
-Antes chamado Caixa Simples, Bipe é uma referência ao som do registro de produtos. A atualização usa o mesmo identificador Flatpak e conserva o banco de dados e as preferências existentes.
+Antes chamado Caixa Simples, Bipe é uma referência ao som do registro de produtos. A versão 0.4.0 usa o identificador Flatpak definitivo do Bipe. Para trazer os dados da instalação anterior, siga o [guia de migração](INSTALACAO.md#migrar-uma-instalação-anterior).
 
 PDV nativo para GNOME, em Python, GTK 4, Libadwaita e SQLite. Funciona localmente, sem servidor, conta ou internet. Licença GPL-3.0-or-later.
 
@@ -26,7 +26,7 @@ Se recebeu `Bipe.flatpak`, abra-o no instalador de aplicativos, ou execute uma v
 
 ```sh
 flatpak install --user ./Bipe.flatpak
-flatpak run io.github.caixasimples.CaixaSimples
+flatpak run io.github.ricardo_pompeu.Bipe
 ```
 
 O runtime GNOME 50 precisa estar instalado; o instalador poderá oferecer seu download. O uso cotidiano funciona sem rede. O aplicativo aparece no menu como **Bipe**.
@@ -34,7 +34,7 @@ O runtime GNOME 50 precisa estar instalado; o instalador poderá oferecer seu do
 Para construir pelo manifesto com `flatpak-builder`:
 
 ```sh
-flatpak-builder --user --install --force-clean _build io.github.caixasimples.CaixaSimples.json
+flatpak-builder --user --install --force-clean _build io.github.ricardo_pompeu.Bipe.json
 ```
 
 Alternativa sem flatpak-builder, quando `org.gnome.Sdk//50` e `org.gnome.Platform//50` já estão disponíveis:
@@ -52,7 +52,7 @@ Dependências: Python ≥ 3.10, PyGObject, Pycairo, introspecção GTK ≥ 4.14,
 Na pasta do projeto:
 
 ```sh
-./caixa-simples
+./bipe-app
 ```
 
 Para instalar nativamente para seu usuário:
@@ -80,7 +80,7 @@ Veja [TESTES.md](TESTES.md) para verificações executadas e roteiro de teste f�
 
 ## Dados e recuperação
 
-O banco é resolvido por `GLib.get_user_data_dir()/io.github.caixasimples.CaixaSimples/caixa.sqlite3`. Na instalação tradicional costuma ficar em `~/.local/share/io.github.caixasimples.CaixaSimples/`; no Flatpak, dentro do diretório persistente da aplicação. Não fica no código-fonte nem na instalação. PDFs de trabalho ficam no cache e são regenerados a partir do histórico.
+O banco é resolvido por `GLib.get_user_data_dir()/io.github.ricardo_pompeu.Bipe/caixa.sqlite3`. Na instalação tradicional costuma ficar em `~/.local/share/io.github.ricardo_pompeu.Bipe/`; no Flatpak, dentro do diretório persistente da aplicação. Não fica no código-fonte nem na instalação. PDFs de trabalho ficam no cache e são regenerados a partir do histórico.
 
 Os valores são inteiros em centavos, com transações, chaves estrangeiras, WAL, sincronização FULL, restrições e versão de migração (`user_version=1`). O token único por carrinho impede registrar duas vezes a mesma conclusão. Nomes, preços, loja e rodapé são preservados no momento da venda.
 
@@ -90,14 +90,14 @@ São feitas cópias consistentes pela API SQLite ao abrir, a cada 15 minutos, ao
 
 ## Estrutura
 
-- `caixa_simples/core.py`: produtos, carrinho, cálculos, resumo diário, banco e backups.
-- `caixa_simples/ui.py`: telas e diálogos nativos, histórico e recuperação.
-- `caixa_simples/receipt.py`: comprovantes PDF e integração real `Gtk.PrintDialog`.
+- `bipe/core.py`: produtos, carrinho, cálculos, resumo diário, banco e backups.
+- `bipe/ui.py`: telas e diálogos nativos, histórico e recuperação.
+- `bipe/receipt.py`: comprovantes PDF e integração real `Gtk.PrintDialog`.
 - `data/`: lançador, metadados AppStream e ícone vetorial próprio.
 - `meson.build` e manifesto JSON: instalação e distribuição.
 - `tests/`, `scripts/smoke_ui.py` e `scripts/acceptance_ui.py`: testes de lógica e de interface.
 
-O identificador `io.github.caixasimples.CaixaSimples` é provisório: antes de publicar, substitua-o pelo domínio/identificador controlado pelo mantenedor em todos os arquivos. O projeto não afirma vínculo com GNOME Circle. Os metadados ainda não têm homepage oficial; isso gera um aviso conhecido do validador AppStream.
+O identificador `io.github.ricardo_pompeu.Bipe` corresponde ao projeto [ricardo-pompeu/bipe](https://github.com/ricardo-pompeu/bipe). O Bipe não faz parte do GNOME Circle.
 
 
 ## Identidade visual

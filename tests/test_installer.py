@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'instalar-caixa-simples.sh'
+SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'instalar-bipe.sh'
 USB = 'usb://Printer/POS-80?serial=OUTRO-COMPUTADOR'
 MODEL = 'drv:///cupsfilters.drv/textonly.ppd'
 

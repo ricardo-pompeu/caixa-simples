@@ -2,7 +2,7 @@ from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from caixa_simples.core import Store, Cart
+from bipe.core import Store, Cart
 
 
 class DailySummaryTest(unittest.TestCase):

@@ -1,5 +1,5 @@
 import unittest
-from caixa_simples.thermal import Queue, select_queue, text_queue, thermal_payload, thermal_lines
+from bipe.thermal import Queue, select_queue, text_queue, thermal_payload, thermal_lines
 
 
 class ThermalTest(unittest.TestCase):

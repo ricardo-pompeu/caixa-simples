@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 from contextlib import closing
-from caixa_simples.core import Store, Cart, money, parse_money, change_due
-from caixa_simples.receipt import render_pdf, receipt_lines, Printer
+from bipe.core import Store, Cart, money, parse_money, change_due
+from bipe.receipt import render_pdf, receipt_lines, Printer
 
 
 class CashTest(unittest.TestCase):

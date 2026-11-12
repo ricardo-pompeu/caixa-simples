@@ -605,7 +605,7 @@ class Window(Adw.ApplicationWindow):
                 raise ValueError('Escolha uma pasta local para guardar o backup.')
             self.store.backup(path)
             self.notify('Backup exportado')
-        self.choose_file('Exportar backup', True, 'caixa-simples-' + datetime.now().strftime('%Y-%m-%d-%H%M%S') + '.sqlite3', export)
+        self.choose_file('Exportar backup', True, 'bipe-' + datetime.now().strftime('%Y-%m-%d-%H%M%S') + '.sqlite3', export)
 
     def restore_backup(self):
         def selected(file):

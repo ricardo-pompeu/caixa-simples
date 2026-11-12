@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.ricardo_pompeu.Bipe</id>
+  <name>Bipe</name>
+  <summary>Um caixa simples para pequenos comércios</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer id="io.github.ricardo_pompeu"><name>Colaboradores do Bipe</name></developer>
+  <description><p>Cadastre produtos com seu leitor USB, registre vendas e imprima comprovantes não fiscais. Todos os dados ficam neste computador, sem contas e sem internet.</p><p>Histórico com reimpressão, comprovantes em PDF e backups locais protegem a rotina da loja.</p></description>
+  <launchable type="desktop-id">io.github.ricardo_pompeu.Bipe.desktop</launchable>
+  <provides><binary>bipe</binary></provides>
+  <content_rating type="oars-1.1"/>
+  <url type="homepage">https://github.com/ricardo-pompeu/bipe</url>
+  <releases><release version="0.4.0" date="2026-11-12"><description><p>Novo identificador do Bipe e ícone de impressora com mais presença no dock.</p></description></release><release version="0.3.0" date="2026-11-12"><description><p>O Caixa Simples agora se chama Bipe e tem um novo ícone de impressora térmica.</p></description></release><release version="0.2.4" date="2026-11-12"><description><p>Corrige a posição do corte na POS-80 USB para preservar o rodapé.</p></description></release><release version="0.2.3" date="2026-11-12"><description><p>Comprovante térmico com valores alinhados e corte automático para POS-80 USB.</p></description></release><release version="0.2.2" date="2026-11-12"><description><p>Detecção automática e impressão direta em térmicas de texto de 58 e 80 mm.</p></description></release><release version="0.2.1" date="2026-10-29"><description><p>Ícone simples de comprovante e gaveta, com profundidade discreta e versão simbólica no estilo GNOME.</p></description></release><release version="0.2.0" date="2026-10-20"><description><p>Nova aba Fechamento com quantidades de produtos vendidos por dia.</p></description></release><release version="0.1.0" date="2026-10-19"/></releases>
+</component>

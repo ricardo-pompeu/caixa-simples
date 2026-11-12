@@ -9,7 +9,7 @@ mode=${1:-}
 case "$mode" in
     '') ;;
     --so-impressora|--verificar) ;;
-    --help) printf '%s\n' 'Uso: sh instalar-caixa-simples.sh [--so-impressora | --verificar]' 'Sem opção: configura a POS-80 e instala o Flatpak ao lado do script.'; exit 0 ;;
+    --help) printf '%s\n' 'Uso: sh instalar-bipe.sh [--so-impressora | --verificar]' 'Sem opção: configura a POS-80 e instala o Flatpak ao lado do script.'; exit 0 ;;
     *) fail 'Use --help para ver as opções.' ;;
 esac
 [ "$#" -le 1 ] || fail 'Use apenas uma opção.'
@@ -19,7 +19,6 @@ if [ "$mode" = '' ]; then
     [ "$(id -u)" != 0 ] || fail 'Execute sem sudo. O instalador pedirá autorização apenas quando necessário.'
     folder=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
     bundle="$folder/Bipe.flatpak"
-    if [ ! -r "$bundle" ]; then bundle="$folder/CaixaSimples.flatpak"; fi
     [ -r "$bundle" ] || fail 'Coloque Bipe.flatpak na mesma pasta do instalador.'
     if [ -f "$folder/SHA256SUMS" ]; then
         (cd "$folder" && sha256sum -c SHA256SUMS)
@@ -100,5 +99,14 @@ if [ "$mode" = '' ]; then
         flatpak install --user --noninteractive flathub "$runtime"
     fi
     flatpak install --user --noninteractive "$bundle"
+    if [ -f "$HOME/.var/app/io.github.caixasimples.CaixaSimples/data/io.github.caixasimples.CaixaSimples/caixa.sqlite3" ]; then
+        if ! command -v python3 >/dev/null 2>&1; then
+            if command -v dnf >/dev/null 2>&1; then admin dnf install python3
+            elif command -v apt-get >/dev/null 2>&1; then admin apt-get install python3
+            else fail 'Instale Python 3 para migrar os dados da versão anterior.'
+            fi
+        fi
+        python3 "$folder/migrar-bipe.py"
+    fi
     printf '%s\n' 'Pronto. Abra Bipe pelo menu de aplicativos. Em Preferências → Impressora, deixe Detectar térmica automaticamente.'
 fi

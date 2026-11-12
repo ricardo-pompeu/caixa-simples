@@ -1,0 +1,9 @@
+{
+  "app-id": "io.github.ricardo_pompeu.Bipe",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "50",
+  "sdk": "org.gnome.Sdk",
+  "command": "bipe",
+  "finish-args": ["--socket=cups", "--share=ipc", "--socket=wayland", "--socket=fallback-x11", "--device=dri"],
+  "modules": [{"name": "bipe", "buildsystem": "meson", "sources": [{"type": "dir", "path": ".", "skip": ["build", ".git", "__pycache__", ".flatpak-builder", "_build", "flatpak-repo"]}]}]
+}

@@ -9,7 +9,7 @@ sys.path.insert(0, os.environ.get('CAIXA_TEST_PACKAGE', str(Path(__file__).resol
 with tempfile.TemporaryDirectory() as temporary:
     os.environ['XDG_DATA_HOME'] = temporary + '/data'
     os.environ['XDG_CACHE_HOME'] = temporary + '/cache'
-    from caixa_simples.ui import Application, Window
+    from bipe.ui import Application, Window
     from gi.repository import GLib, Gtk, Gio
     application = Application()
     application.set_flags(Gio.ApplicationFlags.NON_UNIQUE)
