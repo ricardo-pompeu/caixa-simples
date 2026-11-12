@@ -49,7 +49,7 @@ def scroll(child):
 
 class Window(Adw.ApplicationWindow):
     def __init__(self, app, store):
-        super().__init__(application=app, title='Caixa Simples', default_width=850, default_height=720)
+        super().__init__(application=app, title='Bipe', default_width=850, default_height=720)
         self.store = store
         self.cart = Cart()
         self.printer = Printer(store)
@@ -64,7 +64,7 @@ class Window(Adw.ApplicationWindow):
         switcher = Adw.ViewSwitcher(stack=self.stack, policy=Adw.ViewSwitcherPolicy.WIDE)
         header.set_title_widget(switcher)
         menu = Gio.Menu()
-        for title, action, handler in [('Vendas recentes', 'history', self.history), ('Preferências', 'preferences', self.preferences), ('Exportar backup', 'export', self.export_backup), ('Restaurar backup', 'restore', self.restore_backup), ('Sobre Caixa Simples', 'about', self.about)]:
+        for title, action, handler in [('Vendas recentes', 'history', self.history), ('Preferências', 'preferences', self.preferences), ('Exportar backup', 'export', self.export_backup), ('Restaurar backup', 'restore', self.restore_backup), ('Sobre Bipe', 'about', self.about)]:
             act = Gio.SimpleAction.new(action, None)
             act.connect('activate', lambda *_, h=handler: h())
             self.add_action(act)
@@ -363,9 +363,11 @@ class Window(Adw.ApplicationWindow):
                 printing.set_sensitive(True)
                 status.set_label('A venda está salva. A impressão não foi concluída; tente novamente ou salve o PDF.' if error else 'Comprovante enviado ao sistema de impressão.')
                 if error:
+                    if isinstance(error, (ValueError, OSError)):
+                        status.set_label(f'A venda está salva. {error}')
                     logging.warning('Impressão não concluída: %s', error)
             try:
-                self.printer.print_pdf(self, self.receipt_path(sale), printed)
+                self.printer.print_receipt(self, sale, lambda: self.receipt_path(sale), printed)
             except Exception as error:
                 printed(error)
         printing = button('Imprimir novamente' if not print_now else 'Imprimir', print_receipt, 'suggested-action')
@@ -524,16 +526,56 @@ class Window(Adw.ApplicationWindow):
         group.add(name)
         group.add(footer)
         page.add(group)
-        printer_group = Adw.PreferencesGroup(title='Impressora', description='Selecione a impressora a cada nova sessão. A seleção pode ser reutilizada enquanto o aplicativo estiver aberto.')
-        width = Adw.ComboRow(title='Largura da bobina', model=Gtk.StringList.new(['58 mm', '80 mm']), selected=0 if self.store.get('width', '80') == '58' else 1)
+        printer_group = Adw.PreferencesGroup(title='Impressora', description='O Bipe procura térmicas configuradas no Linux. A largura é detectada quando a fila informa ou identifica a bobina.')
+        choices = ['auto', 'system']
+        destination = Adw.ComboRow(title='Impressora dos comprovantes')
+        printer_group.add(destination)
+        detection = Adw.ActionRow(title='Impressoras locais')
+        printer_group.add(detection)
+        saved = self.store.get('local_printer', 'auto')
+
+        def update_options(queues, preferred):
+            labels = ['Detectar térmica automaticamente', 'Diálogo de impressão do sistema']
+            choices[:] = ['auto', 'system']
+            for queue in queues:
+                choices.append(queue.name)
+                labels.append(f'{queue.name} · {queue.width} mm' + ('' if queue.ready else ' · pausada'))
+            if preferred not in choices:
+                choices.append(preferred)
+                labels.append(f'{preferred} · indisponível')
+            destination.set_model(Gtk.StringList.new(labels))
+            destination.set_selected(choices.index(preferred))
+
+        def detect():
+            detection.set_subtitle('Procurando…')
+            refresh.set_sensitive(False)
+            def detected(queues, error):
+                refresh.set_sensitive(True)
+                preferred = choices[destination.get_selected()]
+                update_options(queues or [], preferred)
+                if error:
+                    detection.set_subtitle('Serviço de impressão local indisponível.')
+                elif queues:
+                    detection.set_subtitle(' · '.join(f'{q.name}: {q.width} mm, texto contínuo' for q in queues))
+                else:
+                    detection.set_subtitle('Nenhuma térmica de texto compatível encontrada. Confira as impressoras do Linux.')
+            self.printer.detect(detected)
+
+        update_options([], saved)
+        refresh = button('Atualizar lista', detect)
+        printer_group.add(refresh)
+        cut = Adw.SwitchRow(title='Corte automático na POS-80', subtitle='Envia o comando de corte ao final do comprovante na POS-80 USB.', active=self.store.get('auto_cut', '1') == '1')
+        printer_group.add(cut)
+        width = Adw.ComboRow(title='Largura da bobina para PDF', model=Gtk.StringList.new(['58 mm', '80 mm']), selected=0 if self.store.get('width', '80') == '58' else 1)
         printer_group.add(width)
-        printer_group.add(button('Selecionar impressora', lambda: self.printer.configure(self, lambda e: self.error('Impressora não configurada', e) if e else self.notify('Impressora selecionada'))))
+        printer_group.add(button('Configurar diálogo do sistema', lambda: self.printer.configure(self, lambda e: self.error('Impressora não configurada', e) if e else self.notify('Impressora selecionada'))))
         def test_print():
             sale = {'id': 0, 'created': datetime.now().astimezone().isoformat(), 'store': name.get_text() or 'Meu estabelecimento', 'footer': 'TESTE DE IMPRESSÃO — sem venda registrada', 'total': 750, 'payment': 'Dinheiro', 'received': 1000, 'change_value': 250, 'items': [{'name': 'Produto de teste', 'price': 750, 'quantity': 1}]}
             try:
-                path = Path(GLib.get_user_cache_dir()) / APP_ID / 'teste.pdf'
-                render_pdf(sale, path, 58 if width.get_selected() == 0 else 80)
-                self.printer.print_pdf(self, path, lambda e: self.error('Impressão não concluída', e) if e else self.notify('Teste enviado à impressora'))
+                def test_pdf():
+                    path = Path(GLib.get_user_cache_dir()) / APP_ID / 'teste.pdf'
+                    return render_pdf(sale, path, 58 if width.get_selected() == 0 else 80)
+                self.printer.print_receipt(self, sale, test_pdf, lambda e: self.error('Impressão não concluída', e) if e else self.notify('Teste enviado à fila de impressão'), choice=choices[destination.get_selected()], cut_enabled=cut.get_active())
             except Exception as error:
                 self.error('Não foi possível imprimir o teste', error)
         printer_group.add(button('Testar impressão', test_print))
@@ -546,7 +588,7 @@ class Window(Adw.ApplicationWindow):
         page.add(appearance)
         def save():
             try:
-                self.store.configure(store=name.get_text().strip()[:200] or 'Meu estabelecimento', footer=footer.get_text().strip()[:300], width=58 if width.get_selected() == 0 else 80)
+                self.store.configure(store=name.get_text().strip()[:200] or 'Meu estabelecimento', footer=footer.get_text().strip()[:300], local_printer=choices[destination.get_selected()], auto_cut=int(cut.get_active()), width=58 if width.get_selected() == 0 else 80)
                 self.printer.set_paper(58 if width.get_selected() == 0 else 80)
                 self.notify('Preferências salvas')
                 dialog.close()
@@ -554,6 +596,7 @@ class Window(Adw.ApplicationWindow):
                 self.error('Não foi possível salvar as preferências', error)
         group.add(button('Salvar preferências', save, 'suggested-action'))
         dialog.present(self)
+        detect()
 
     def export_backup(self):
         def export(file):
@@ -602,7 +645,7 @@ class Window(Adw.ApplicationWindow):
         return False
 
     def about(self):
-        Adw.AboutDialog(application_name='Caixa Simples', application_icon=APP_ID, version=VERSION, developer_name='Colaboradores do Caixa Simples', license_type=Gtk.License.GPL_3_0, comments='Um caixa simples, local e sem complicação.\nEmite comprovantes não fiscais.').present(self)
+        Adw.AboutDialog(application_name='Bipe', application_icon=APP_ID, version=VERSION, developer_name='Colaboradores do Bipe', license_type=Gtk.License.GPL_3_0, comments='Um caixa simples, local e sem complicação.\nEmite comprovantes não fiscais.').present(self)
 
 
 class Application(Adw.Application):
@@ -622,7 +665,7 @@ class Application(Adw.Application):
             self.store = Store(path)
         except Exception as error:
             logging.exception('Não foi possível abrir o banco')
-            window = Adw.ApplicationWindow(application=self, title='Caixa Simples', default_width=520, default_height=420)
+            window = Adw.ApplicationWindow(application=self, title='Bipe', default_width=520, default_height=420)
             body = box()
             body.append(Adw.HeaderBar())
             page = Adw.StatusPage(title='Não foi possível abrir seus dados', icon_name='dialog-warning-symbolic', description='Os arquivos originais foram preservados. Você pode restaurar uma cópia de segurança ou tentar abrir novamente.')

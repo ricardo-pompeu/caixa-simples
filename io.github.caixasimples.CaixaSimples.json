@@ -4,6 +4,6 @@
   "runtime-version": "50",
   "sdk": "org.gnome.Sdk",
   "command": "caixa-simples",
-  "finish-args": ["--share=ipc", "--socket=wayland", "--socket=fallback-x11", "--device=dri"],
+  "finish-args": ["--socket=cups", "--share=ipc", "--socket=wayland", "--socket=fallback-x11", "--device=dri"],
   "modules": [{"name": "caixa-simples", "buildsystem": "meson", "sources": [{"type": "dir", "path": ".", "skip": ["build", ".git", "__pycache__", ".flatpak-builder", "_build", "flatpak-repo"]}]}]
 }

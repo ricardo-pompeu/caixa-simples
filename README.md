@@ -1,4 +1,8 @@
-# Caixa Simples
+# Bipe
+
+![Ícone do Bipe](data/bipe-icon-preview.png)
+
+Antes chamado Caixa Simples, Bipe é uma referência ao som do registro de produtos. A atualização usa o mesmo identificador Flatpak e conserva o banco de dados e as preferências existentes.
 
 PDV nativo para GNOME, em Python, GTK 4, Libadwaita e SQLite. Funciona localmente, sem servidor, conta ou internet. Licença GPL-3.0-or-later.
 
@@ -16,16 +20,16 @@ A aba **Fechamento** mostra as unidades vendidas no dia, a quantidade de produto
 
 ## Instalar pelo Flatpak
 
-Para baixar a versão pronta e transferir seus dados, siga o [passo a passo de instalação](INSTALACAO.md).
+Para instalar o aplicativo e preparar automaticamente a POS-80 USB, use o kit de instalação e siga o [passo a passo](INSTALACAO.md). A configuração da fila é feita uma vez no Linux com autorização de administrador.
 
-Se recebeu `CaixaSimples.flatpak`, abra-o no instalador de aplicativos, ou execute uma vez:
+Se recebeu `Bipe.flatpak`, abra-o no instalador de aplicativos, ou execute uma vez:
 
 ```sh
-flatpak install --user ./CaixaSimples.flatpak
+flatpak install --user ./Bipe.flatpak
 flatpak run io.github.caixasimples.CaixaSimples
 ```
 
-O runtime GNOME 50 precisa estar instalado; o instalador poderá oferecer seu download. O uso cotidiano funciona sem rede. O aplicativo aparece no menu como **Caixa Simples**.
+O runtime GNOME 50 precisa estar instalado; o instalador poderá oferecer seu download. O uso cotidiano funciona sem rede. O aplicativo aparece no menu como **Bipe**.
 
 Para construir pelo manifesto com `flatpak-builder`:
 
@@ -62,7 +66,11 @@ Para instalação do sistema, use `meson setup build --prefix=/usr` e `sudo meso
 
 ## Impressão
 
-Em **Preferências**, configure nome da loja, rodapé e bobina de 58 ou 80 mm. **Selecionar impressora** abre o diálogo nativo GTK/CUPS ou seu portal no Flatpak. A seleção é reutilizada nesta sessão; preferências de impressão serializáveis ficam no banco e são sugeridas na próxima abertura, que exige nova seleção. O aplicativo não promete impressão direta entre reinicializações. Alterar a bobina invalida a seleção em memória.
+Em **Preferências → Impressora**, a opção padrão **Detectar térmica automaticamente** usa a fila local quando encontra uma única térmica de texto de 58 ou 80 mm. A fila deve estar configurada no Linux. A largura vem do papel informado pelo CUPS ou do nome da fila, como POS-80 ou POS-58; um tamanho A4 genérico não é usado para inferir largura. Se houver mais de uma térmica compatível, escolha a desejada e salve. Use **Testar impressão** para conferir o papel sem registrar venda.
+
+O comprovante térmico usa um cabeçalho centralizado, valores alinhados à direita e quebra de nomes longos. Na POS-80 USB reconhecida, **Corte automático na POS-80** envia o comprovante em ESC/POS, com espaçamento compacto, comando combinado de avanço até a lâmina e corte parcial abaixo do rodapé. Desative a opção e salve se o firmware não aceitar o comando. As demais térmicas, ou a POS-80 com o corte desativado, usam texto contínuo ASCII. A fila do Linux não é alterada, e o PDF continua disponível. O estado da fila não confirma a impressão nem o corte físico.
+
+Use **Diálogo de impressão do sistema** para outras impressoras ou drivers gráficos. O PDF usa a largura escolhida em **Largura da bobina para PDF**. O Flatpak acessa o soquete local do CUPS para a detecção e a impressão direta, sem acesso USB direto ou rede própria.
 
 O comprovante é PDF vetorial, com texto Pango, quebra de nomes longos, largura física da bobina e altura variável. Verifique também o papel suportado na configuração da impressora: alguns drivers térmicos precisam de ajuste de escala/comprimento. O retorno de sucesso significa que o sistema aceitou o trabalho; CUPS pode reportar falta de papel ou falha física posteriormente. Reimprima pelo histórico quando necessário.
 
@@ -94,6 +102,6 @@ O identificador `io.github.caixasimples.CaixaSimples` é provisório: antes de p
 
 ## Identidade visual
 
-O ícone mantém o desenho simples de um comprovante sobre uma gaveta azul, com bordas iluminadas, rebaixo e sombra de contato suaves. É um SVG original em grade de 128 × 128 px, com base em 112 px, perfil inferior de 4 px, paleta GNOME e formas simples sem sombras externas. A versão simbólica em 16 × 16 px é monocromática e recebe a cor do tema pelo GTK. Ambos são instalados no tema hicolor pelo Meson e incluídos no Flatpak.
+O ícone mostra uma impressora térmica azul com o papel saindo pela frente, com uma sombra de contato discreta e formas que se mantêm legíveis em tamanhos pequenos. É um SVG original em grade de 128 × 128 px, com base em 112 px, perfil inferior de 4 px, paleta GNOME e formas simples sem sombras externas. A versão simbólica em 16 × 16 px é monocromática e recebe a cor do tema pelo GTK. Ambos são instalados no tema hicolor pelo Meson e incluídos no Flatpak.
 
 Referências: [GNOME HIG — App Icons](https://developer.gnome.org/hig/guidelines/app-icons.html) e [UI Icons](https://developer.gnome.org/hig/guidelines/ui-icons.html). A arte não implica participação ou certificação no GNOME Circle.

@@ -62,10 +62,10 @@ with tempfile.TemporaryDirectory() as temporary:
         assert window.cart.total == 1500
         window.checkout()
         entry('Recebido (R$, opcional)', '20,00')
-        def fail_print(parent, path, callback):
-            calls.append(path)
+        def fail_print(parent, sale, pdf_path, callback):
+            calls.append(pdf_path())
             callback(RuntimeError('Falha de impressão de teste'))
-        window.printer.print_pdf = fail_print
+        window.printer.print_receipt = fail_print
         click('Concluir e imprimir')
         assert not window.cart.items
         assert len(window.store.recent()) == 1

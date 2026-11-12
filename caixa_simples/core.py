@@ -128,10 +128,10 @@ class Store:
             version = self.db.execute('PRAGMA user_version').fetchone()[0]
             if version == 0:
                 if self.db.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchone():
-                    raise ValueError('Este arquivo não é um banco do Caixa Simples.')
+                    raise ValueError('Este arquivo não é um banco do Bipe.')
                 self.db.executescript('BEGIN IMMEDIATE;\n' + SCHEMA + '\nCOMMIT;')
             elif version != 1:
-                raise ValueError('Este banco precisa de uma versão mais recente do Caixa Simples.')
+                raise ValueError('Este banco precisa de uma versão mais recente do Bipe.')
             if self.db.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
                 raise ValueError('Não foi possível verificar seus dados. Restaure um backup.')
             self.db.execute('PRAGMA journal_mode=WAL')
@@ -265,7 +265,7 @@ class Store:
     @staticmethod
     def validate_backup(db):
         if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok' or db.execute('PRAGMA user_version').fetchone()[0] != 1:
-            raise ValueError('Este arquivo não é um backup válido do Caixa Simples.')
+            raise ValueError('Este arquivo não é um backup válido do Bipe.')
         expected = {'products': {'id','barcode','name','price'}, 'sales': {'id','token','created','total','payment','received','change_value','store','footer'}, 'sale_items': {'id','sale_id','product_id','name','price','quantity'}, 'settings': {'key','value'}}
         for table, columns in expected.items():
             if {r[1] for r in db.execute(f'PRAGMA table_info({table})')} != columns:

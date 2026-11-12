@@ -2,12 +2,14 @@
 """Comprovantes térmicos em PDF com texto Pango; impressão nativa assíncrona."""
 from datetime import datetime
 from pathlib import Path
+from threading import Thread
 import cairo
 import gi
 gi.require_version('Pango', '1.0')
 gi.require_version('PangoCairo', '1.0')
 from gi.repository import Pango, PangoCairo
 from .core import money
+from .thermal import Cups, select_queue
 
 
 def receipt_lines(sale):
@@ -102,6 +104,55 @@ class Printer:
             except Exception as error:
                 callback(error)
         self.dialog.setup(parent, None, done)
+
+    @staticmethod
+    def _background(action, callback):
+        from gi.repository import GLib
+
+        def run():
+            try:
+                result, error = action(), None
+            except (OSError, ValueError) as exc:
+                result, error = None, exc
+            GLib.idle_add(callback, result, error)
+
+        Thread(target=run, daemon=True).start()
+
+    def detect(self, callback):
+        self._background(lambda: Cups().queues(), callback)
+
+    def print_receipt(self, parent, sale, pdf_path, callback, choice=None, cut_enabled=None):
+        if choice is None:
+            choice = self.store.get('local_printer', 'auto')
+        if choice == 'system':
+            self.print_pdf(parent, pdf_path(), callback)
+            return
+
+        if cut_enabled is None:
+            cut_enabled = self.store.get('auto_cut', '1') == '1'
+        title = 'Bipe — teste' if not sale['id'] else f"Bipe — venda {sale['id']:06d}"
+
+        def submit():
+            try:
+                cups = Cups()
+                queues = cups.queues()
+            except OSError:
+                if choice == 'auto':
+                    return None
+                raise
+            queue = select_queue(queues, choice)
+            return cups.submit(queue, sale, title, cut_enabled) if queue else None
+
+        def done(job, error):
+            if error or job:
+                callback(error)
+                return
+            try:
+                self.print_pdf(parent, pdf_path(), callback)
+            except Exception as exc:
+                callback(exc)
+
+        self._background(submit, done)
 
     def print_pdf(self, parent, path, callback):
         from gi.repository import Gio
