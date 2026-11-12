@@ -17,6 +17,8 @@ Baixe o kit `Bipe-POS80-linux-x86_64.tar.gz` nos **Assets** da [versão 0.4.0](h
 
 O instalador reaproveita uma fila POS-80 que já esteja correta. Em caso de conflito com outra fila ou com mais de uma POS-80 conectada, ele explica o problema e preserva a configuração existente. Ele não altera a impressora padrão nem copia o número de série, os dados da loja ou as preferências do notebook. O procedimento requer CUPS com suporte a drivers PPD legados; as etapas de instalação de dependências precisam de rede.
 
+O kit também inclui `instalar-caixa-simples.sh` para quem segue instruções antigas. Execute-o na mesma pasta de `instalar-bipe.sh`; os dois aceitam as mesmas opções.
+
 Se o app já estiver instalado, execute `sh instalar-bipe.sh --so-impressora` para preparar apenas a fila. Para verificar a conexão e a fila sem alterar nada, use `sh instalar-bipe.sh --verificar`.
 
 ## Instalação manual, sem preparação da impressora

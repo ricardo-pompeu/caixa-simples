@@ -20,7 +20,19 @@ A aba **Fechamento** mostra as unidades vendidas no dia, a quantidade de produto
 
 ## Instalar pelo Flatpak
 
-Para instalar o aplicativo e preparar automaticamente a POS-80 USB, use o kit de instalação e siga o [passo a passo](INSTALACAO.md). A configuração da fila é feita uma vez no Linux com autorização de administrador.
+### Configurar a impressora POS-80 USB
+
+Baixe e extraia o **kit POS-80** da [versão 0.4.0](https://github.com/ricardo-pompeu/bipe/releases/tag/v0.4.0). Ligue a impressora, conecte o USB e, na pasta extraída, execute:
+
+```sh
+sh instalar-bipe.sh --so-impressora
+```
+
+O nome anterior continua disponível no kit: `sh instalar-caixa-simples.sh --so-impressora` faz a mesma coisa. Sem `--so-impressora`, o script também instala o Bipe. O Linux pode pedir autorização de administrador para configurar a fila.
+
+Se estiver usando o código-fonte, execute `sh scripts/instalar-bipe.sh --so-impressora` na raiz do repositório. O [guia de instalação](INSTALACAO.md) também explica como migrar os dados.
+
+### Instalar só o aplicativo
 
 Se recebeu `Bipe.flatpak`, abra-o no instalador de aplicativos, ou execute uma vez:
 
